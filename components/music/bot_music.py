@@ -47,18 +47,31 @@ class MusicComponent:
             async with ctx.typing():
                 filename = await YTDLSource.from_url(url)
                 self.playlist.append(filename)
-            trimmed_filename = (
-                filename.replace(f"{BotConfig().MUSIC_FOLDER}\\", "").replace(f"./{BotConfig().MUSIC_FOLDER}/", "").replace(".webm", "").replace("'", "")
-            )
+            if platform.system() == "Windows":
+                prefix = BotConfig().MUSIC_FOLDER.replace("./", "")
+                trimmed_filename = (
+                    filename.replace(f"{prefix}\\", "").replace(".webm", "").replace("'", "")
+                )
+            else:
+                trimmed_filename = (
+                    filename.replace(f"{BotConfig().MUSIC_FOLDER}/", "").replace(".webm", "").replace("'", "")
+                )
             await ctx.send(f"**Added to playlist:** {trimmed_filename}")
 
         @self.client.command(name="lookup", help="Lookup the playlist")
         async def lookup(ctx):
             if len(self.playlist) != 0:
-                trimmed_list = [
-                    s.replace(f"{BotConfig().MUSIC_FOLDER}\\", "").replace(f"./{BotConfig().MUSIC_FOLDER}/", "").replace(".webm", "").replace("'", "")
-                    for s in self.playlist
-                ]
+                if platform.system() == "Windows":
+                    prefix = BotConfig().MUSIC_FOLDER.replace("./", "")
+                    trimmed_list = [
+                        s.replace(f"{prefix}\\", "").replace(".webm", "").replace("'", "")
+                        for s in self.playlist
+                    ]
+                else:
+                    trimmed_list = [
+                        s.replace(f"{BotConfig().MUSIC_FOLDER}/", "").replace(".webm", "").replace("'", "")
+                        for s in self.playlist
+                    ]
                 trimmed_list = "\n".join(trimmed_list)
                 await ctx.send(f"**Playlist:** \n{trimmed_list}")
 

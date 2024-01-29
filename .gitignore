@@ -1,0 +1,56 @@
+# Virtual environment
+.venv/
+venv/
+venv1/
+venv2/
+venv3/
+my_venv/
+my_venv1/
+my_venv2/
+
+# Config
+config/config.ini
+
+# Saved audios
+audio_files/*
+
+# Windows media players
+ffmpeg.exe
+ffplay.exe
+mpv.exe
+
+# Old
+_old/
+
+# Byte-compiled / optimized / DLL files
+__pycache__/
+*.py[cod]
+
+# Distribution / packaging
+bin/
+build/
+develop-eggs/
+dist/
+eggs/
+lib/
+lib64/
+parts/
+sdist/
+var/
+*.egg-info/
+.installed.cfg
+*.egg
+
+# Installer logs
+pip-log.txt
+pip-delete-this-directory.txt
+
+# Unit test / coverage reports
+.cache
+
+# Django stuff:
+*.log
+*.pot
+
+# Sphinx documentation
+docs/_build/

@@ -1,3 +1,4 @@
+import platform
 import threading
 import time
 
@@ -5,6 +6,7 @@ import discord
 from discord.ext import commands
 
 from components.music.YTDL import YTDLSource
+from components.bot_config import BotConfig
 
 
 class MusicComponent:
@@ -46,7 +48,7 @@ class MusicComponent:
                 filename = await YTDLSource.from_url(url)
                 self.playlist.append(filename)
             trimmed_filename = (
-                filename.replace("music_db\\", "").replace(".webm", "").replace("'", "")
+                filename.replace(f"{BotConfig().MUSIC_FOLDER}\\", "").replace(f"./{BotConfig().MUSIC_FOLDER}/", "").replace(".webm", "").replace("'", "")
             )
             await ctx.send(f"**Added to playlist:** {trimmed_filename}")
 
@@ -54,7 +56,7 @@ class MusicComponent:
         async def lookup(ctx):
             if len(self.playlist) != 0:
                 trimmed_list = [
-                    s.replace("music_db\\", "").replace(".webm", "").replace("'", "")
+                    s.replace(f"{BotConfig().MUSIC_FOLDER}\\", "").replace(f"./{BotConfig().MUSIC_FOLDER}/", "").replace(".webm", "").replace("'", "")
                     for s in self.playlist
                 ]
                 trimmed_list = "\n".join(trimmed_list)
@@ -85,11 +87,20 @@ class MusicComponent:
                 if not self.voice_client.is_playing():
                     if len(self.playlist) > 0:
                         filename = self.playlist.pop(0)
-                        self.voice_client.play(
-                            discord.FFmpegPCMAudio(
-                                executable="ffmpeg.exe", source=filename
+                        if platform.system() == "Windows":
+                            self.voice_client.play(
+                                discord.FFmpegPCMAudio(
+                                    executable="ffmpeg.exe", source=filename
+                                )
                             )
-                        )
+                        elif platform.system() == "Linux":
+                            self.voice_client.play(
+                                discord.FFmpegPCMAudio(
+                                    executable="ffmpeg", source=filename
+                                )
+                            )
+                        else:
+                            raise Exception("Unsupported OS")
                         self.current_song_name = filename
                     else:
                         self.current_song_name = None
